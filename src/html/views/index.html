@@ -1,12 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   @@include('./../includes/meta.html')
 </head>
+<style>
+  body {
+    display: flex;
+    padding-top: 100px;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+
+    font-family: Helvetica, Arial, sans-serif
+  }
+
+  form {
+    width: 500px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .form__field {
+    display: block;
+  }
+
+  label {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  textarea {
+    resize: none;
+    height: 50px;
+  }
+
+  .messages {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .messages__item {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: aquamarine;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 5px;
+  }
+
+  .messages__item-name {
+    font-size: 13px;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .message__item-time {
+    opacity: 0.2;
+    position: absolute;
+    top: 3px;
+    right: 12px;
+    font-size: 10px;
+  }
+
+  .messages__item-message {
+    margin: 0;
+  }
+
+</style>
+
 <body>
-  <img src="assets/img/logo.svg" alt="">
-  <h1>Gulp + Webpack</h1>
+  <ul class="messages">
+  </ul>
+  <form class="form" action="" method="GET" autocomplete="off">
+    <label for="name">
+      <span>Name:</span>
+      <input class="form__field" type="text" name="name" id="name" placeholder="Your name">
+    </label>
+    <label for="message">
+      <span>Message:</span>
+      <textarea class="form__field" name="message" id="message" cols="30" rows="10"
+        placeholder="Your message"></textarea>
+    </label>
+    <button class="form__button form__button--submit" type="submit">Send</button>
+  </form>
   <script src="js/vendors.js"></script>
   <script src="js/bundle.js"></script>
 </body>
+
 </html>
