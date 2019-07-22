@@ -15,13 +15,112 @@
 [Открыть Google Таблицы](https://www.google.ru/intl/ru/sheets/about/)
 
 В моем примере мне потребуются столбцы:
-1. Timestamp - для времени записи сообщения
+1. Timestamp - для времени записи сообщения(если это поле существует - скрипт Google таблиц будет заполнять его автоматически в момент записи полученных данных)
 2. name - для поля имени пользователя
 3. message - для поля сообщения
 
+Я сразу меняю имя листа у таблицы на латинские символы, например "Sheet1" - его необходимо будет указать в скрипте
+
 ![alt-текст](https://raw.githubusercontent.com/7mirnoff/backend-on-google-sheet/master/material/cleartable.png "Пустая таблица")
 
-## Добавляем скрипт для обработки наших ajax запросов
+## Добавляем скрипт(.gs) для обработки наших ajax запросов
 
 **Инструменты - Редактор скриптов**
-![alt-текст](https://raw.githubusercontent.com/7mirnoff/backend-on-google-sheet/master/material/toolse.png "Меню - редактор скриптов")
+
+![alt-текст](https://raw.githubusercontent.com/7mirnoff/backend-on-google-sheet/master/material/tools.png "Меню - редактор скриптов")
+
+Скрипт для вставки:
+
+```javascript
+var ss = SpreadsheetApp.getActiveSpreadsheet(),
+      s = ss.getActiveSheet();
+
+function getData(){
+  var result = [],
+      range = 'A:C', // диапазон ячеек, который хотим выгружать
+      values = s.getRange(range).getValues(),
+      last_row = parseInt(s.getLastRow());
+
+  for (var i = 1; i < last_row; i++) {
+      result.push(values[i]);
+  }
+  return result;
+}
+
+function doGet(e){
+  if (!e.parameter.isGet) {
+    return handleResponse(e);
+  } else {
+    var data = getData();
+    if(!data) {
+      data = '';
+    }
+    return ContentService.createTextOutput(JSON.stringify({'result': data})).setMimeType(ContentService.MimeType.JSON);
+  }
+
+}
+var SHEET_NAME = "Sheet1"; // имя таблицы в которую записываем данные из формы
+
+var SCRIPT_PROP = PropertiesService.getScriptProperties();
+
+function handleResponse(e) {
+  var lock = LockService.getPublicLock();
+  lock.waitLock(30000);
+
+  try {
+    var doc = SpreadsheetApp.openById(SCRIPT_PROP.getProperty("key"));
+    var sheet = doc.getSheetByName(SHEET_NAME);
+
+    var headRow = e.parameter.header_row || 1;
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var nextRow = sheet.getLastRow() + 1;
+    var row = [];
+
+    for (i in headers){
+      if (headers[i] == "Timestamp"){
+        row.push(new Date());
+      } else {
+        row.push(e.parameter[headers[i]]);
+      }
+    }
+
+    sheet.getRange(nextRow, 1, 1, row.length).setValues([row]);
+
+    return ContentService
+    .createTextOutput(JSON.stringify({"result":"success", "row": nextRow, "eparameter": e}))
+          .setMimeType(ContentService.MimeType.JSON);
+  } catch(e){
+
+    return ContentService
+          .createTextOutput(JSON.stringify({"result":"error", "error": e}))
+          .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function setup() {
+    var doc = SpreadsheetApp.getActiveSpreadsheet();
+    SCRIPT_PROP.setProperty("key", doc.getId());
+}
+```
+> _Комментариями отмечены места которые требуют вашего внимания: при необходимости переопределите диапазон ячеек, данные которых будут отправлены на клиент_
+
+> _Не забудте указать SHEET_NAME, оно указывается скрипту в какой лист записывать отправленные клиентом данные_
+
+Данные скрипт я собрал из двух статей:
+
+[Данные из Google Таблиц на вашем сайте](https://habr.com/ru/company/englishdom/blog/343082/)
+
+[Google Sheets as a Database – INSERT with Apps Script using POST/GET methods (with ajax example)](https://mashe.hawksey.info/2014/07/google-sheets-as-a-database-insert-with-apps-script-using-postget-methods-with-ajax-example/)
+
+Там также есть оригинальные комментарии к коду, если хотите доработать или дополнить функционал.
+
+Также ссылки на документацию Google:
+
+[Spreadsheet Service](https://developers.google.com/apps-script/reference/spreadsheet/)
+
+[Class Sheet](https://developers.google.com/apps-script/reference/spreadsheet/sheet)
+
+## Клиентский JS
+
