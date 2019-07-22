@@ -11,12 +11,17 @@
 ![alt-текст](https://raw.githubusercontent.com/7mirnoff/backend-on-google-sheet/master/material/interface.png "Интерфейс")
 > _Интерфейс включает в себя форму для сообщений и список выведенных комментариев из таблицы_
 
-## Создадим таблицу на Google Doc
+## Создадем таблицу на Google Doc
 [Открыть Google Таблицы](https://www.google.ru/intl/ru/sheets/about/)
 
-В моем примере мне потребуются поля:
+В моем примере мне потребуются столбцы:
 1. Timestamp - для времени записи сообщения
 2. name - для поля имени пользователя
-3. message - для сообщения
+3. message - для поля сообщения
 
-![alt-текст](https://raw.githubusercontent.com/7mirnoff/backend-on-google-sheet/master/material/clear-table.png "Пустая таблица")
+![alt-текст](https://raw.githubusercontent.com/7mirnoff/backend-on-google-sheet/master/material/cleartable.png "Пустая таблица")
+
+## Добавляем скрипт для обработки наших ajax запросов
+
+**Инструменты - Редактор скриптов**
+![alt-текст](https://raw.githubusercontent.com/7mirnoff/backend-on-google-sheet/master/material/toolse.png "Меню - редактор скриптов")
