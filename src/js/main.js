@@ -26,7 +26,7 @@ const renderData = (res) => {
                               <h3 class="messages__item-name">${post[1]}</h3>
                               <p class="messages__item-message">${post[2]}</p>
                             </li>`
-  });
+  })
 }
 
 const isGetData = new URLSearchParams()
