@@ -9,3 +9,14 @@
 Возьму утрированый пример: форму для комментариев. Выглядеть она будет так:
 
 ![alt-текст](https://raw.githubusercontent.com/7mirnoff/backend-on-google-sheet/master/material/interface.png "Интерфейс")
+> _Интерфейс включает в себя форму для сообщений и список выведенных комментариев из таблицы_
+
+## Создадим таблицу на Google Doc
+[Открыть Google Таблицы](https://www.google.ru/intl/ru/sheets/about/)
+
+В моем примере мне потребуются поля:
+1. Timestamp - для времени записи сообщения
+2. name - для поля имени пользователя
+3. message - для сообщения
+
+![alt-текст](https://raw.githubusercontent.com/7mirnoff/backend-on-google-sheet/master/material/clear-table.png "Пустая таблица")
